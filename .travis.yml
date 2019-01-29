@@ -1,0 +1,13 @@
+language: python
+
+branches:
+  only:
+    - master
+
+before_install:
+  - pip install awscli
+
+script:
+  - ./publish_all.py
+
+
