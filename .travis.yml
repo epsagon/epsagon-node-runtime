@@ -8,6 +8,6 @@ before_install:
   - pip install awscli
 
 script:
-  - ./publish_all.py
+  - ./publish_all.sh
 
 
