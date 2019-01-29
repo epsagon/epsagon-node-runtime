@@ -56,32 +56,41 @@ function apiRequest(method, path, body) {
 let API = {
   next() {
     return apiRequest('GET', 'invocation/next').then((response) => {
+      let contextObjects = (
+        response.headers['lambda-runtime-cognito-identity'] ?
+          JSON.parse(response.headers['lambda-runtime-cognito-identity']) : {}
+      );
+      contextObjects.clientContext = response.headers['lambda-runtime-client-context'];
+
       return ({
           invokeid: response.headers['lambda-runtime-aws-request-id'],
           'x-amzn-trace-id': response.headers['lambda-runtime-trace-id'],
           eventBody: response.body,
-          contextObjects: {
-            clientContext: response.headers['lambda-runtime-client-context'],
-            ...(response.headers['lambda-runtime-cognito-identity'] && JSON.parse(response.headers['lambda-runtime-cognito-identity'])),
-          },
+          contextObjects,
           invokedFunctionArn: response.headers['lambda-runtime-aws-request-id'],
           deadline: response.headers['lambda-runtime-deadline-ms'],
-        })
-      }
-    );
+      });
+    });
   },
   response(invocationId, result) {
     return apiRequest('POST', `invocation/${invocationId}/response`, result);
   },
   error(invocationId, msg, name, stack) {
+   let data = msg;
+   if (name || stack) {
+     let result = {errorMessage: msg};
+     if (name) {
+       result.errorType = name;
+     }
+     if (stack) {
+       result.stackTrace = stack;
+     }
+     data = JSON.stringify(result);
+   }
    return apiRequest(
     'POST',
     `invocation/${invocationId}/error`,
-     (name && stack ? JSON.stringify({
-        errorMessage: msg,
-        ...(name && {errorType: name}),
-        ...(stack && {stackTrace: stack}),
-     }) : msg)
+     data
    );
   },
   initError (msg) {
