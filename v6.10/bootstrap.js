@@ -230,8 +230,8 @@ class InvokeManager {
     let modulePath = appParts[0];
     let handlerName = appParts[1];
     try {
-      let lambdaTaskRoot = process.env['CUSTOM_TASK_ROOT'] || process.env['LAMBDA_TASK_ROOT'];
-      let moduleFullPath = lambdaTaskRoot + "/" + modulePath;
+      let lambdaTaskRoot = process.env['LAMBDA_TASK_ROOT'];
+      let moduleFullPath = modulePath.startsWith('/opt/') ? modulePath: lambdaTaskRoot + "/" + modulePath;
       let app = require(moduleFullPath);
       let userHandler = app[handlerName];
 
