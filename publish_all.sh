@@ -2,7 +2,7 @@
 
 deploy_folder() {
     cd $1;
-    rm layer.zip &&
+    rm -f layer.zip &&
         ./build.sh &&
         ./publish.sh;
     result=$?;
