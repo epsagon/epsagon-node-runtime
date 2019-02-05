@@ -296,7 +296,13 @@ function invoke(handler, event, baseContext, finish) {
     }
   }, baseContext);
 
-  handler(event, context, callback);
+  // if response is a Promise, use it to call finish() instead
+  let response = handler(event, context, callback);
+  if (response instanceof Promise) {
+    response
+      .then(context.succeed)
+      .catch(context.fail);
+  }
 }
 
 function stringifyError(errType, err) {
