@@ -67,7 +67,7 @@ let API = {
         'x-amzn-trace-id': response.headers['lambda-runtime-trace-id'],
         eventBody: response.body,
         contextObjects,
-        invokedFunctionArn: response.headers['lambda-runtime-aws-request-id'],
+        invokedFunctionArn: response.headers['lambda-runtime-invoked-function-arn'],
         deadline: response.headers['lambda-runtime-deadline-ms'],
       });
     });
