@@ -8,5 +8,14 @@ RUN curl -sSL https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-lin
   tar -xJ -C /opt --strip-components 1 -- node-v${NODE_VERSION}-linux-x64/bin/node && \
   strip /opt/bin/node
 
+RUN curl -sSL https://www.npmjs.org/install.sh | PATH=/opt/bin/:$PATH sh
+RUN mkdir /opt/nodejs
+
+RUN cd /opt/nodejs
+RUN PATH=/opt/bin:$PATH npm install aws-sdk@2.290.0
+
+RUN rm -r /opt/lib /opt/bin/npm /opt/bin/npx /opt/share
+RUN mv /var/task/node_modules /opt/nodejs/
+
 RUN cd /opt && \
   zip -yr /tmp/node-v${NODE_VERSION}.zip ./*
