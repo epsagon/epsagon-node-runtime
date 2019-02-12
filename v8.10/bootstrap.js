@@ -11,6 +11,7 @@ let invokeManager = undefined;
 const RUNTIME_API = process.env.AWS_LAMBDA_RUNTIME_API;
 const [RUNTIME_HOST, RUNTIME_PORT] = RUNTIME_API.split(':');
 const API_BASE_PATH = '/2018-06-01/runtime';
+const MAX_LOGGED_ERROR_SIZE = 256 * 1024;
 
 const BASE_CONTEXT = Object.freeze({
   logGroupName : process.env['AWS_LAMBDA_LOG_GROUP_NAME'],
@@ -316,6 +317,16 @@ function stringifyError(errType, err) {
   }
 
   let jsonStrErrObj = JSON.stringify(errObj);
+  if (errType !== 'unhandled') {
+    //we log only 256K of errorMessage into customer's cloudwatch
+    if (jsonStrErrObj != null) {
+      if (jsonStrErrObj.length > MAX_LOGGED_ERROR_SIZE) {
+        console.log(jsonStrErrObj.substring(0, MAX_LOGGED_ERROR_SIZE) + ' - Truncated by Lambda');
+      } else {
+        console.log(jsonStrErrObj);
+      }
+    }
+  }
   return jsonStrErrObj;
 }
 
