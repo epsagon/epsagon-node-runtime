@@ -1,6 +1,6 @@
 #!/bin/dash -e
 
-export NODE_PATH=/var/task/node_modules:/opt/nodejs/node6.10/node_modules:/opt/nodejs/node_modules:/var/runtime/node_modules:/var/runtime:/var/task
+export NODE_PATH=/var/task:/var/task/node_modules:/opt/nodejs/node6.10/node_modules:/opt/nodejs/node_modules:/var/runtime/node_modules:/var/runtime
 
 /opt/bin/node \
   --expose-gc \
