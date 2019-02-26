@@ -442,8 +442,8 @@ function stringStartsWith(str, prefix) {
   return str.substring(0, prefix.length) === prefix;
 };
 
+var originalConsoleLog = console.log;
 function patchLogging(invokeId) {
-  var originalConsoleLog = console.log;
   console.log = console.error = console.warn = console.info = function prettyConsoleLog() {
     var dateString = new Date().toISOString();
     var message = `${dateString}\t${invokeId}\t${util.format.apply(this, arguments)}\n`;
